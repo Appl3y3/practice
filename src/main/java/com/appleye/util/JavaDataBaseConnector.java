@@ -12,21 +12,14 @@ import java.util.logging.Logger;
 public class JavaDataBaseConnector {
     public static final Logger LOGGER = Logger.getLogger("JavaDataBaseConnector");
 
-    private static Connection conn;
-    private static PreparedStatement ps;
-    private static ResultSet rs;
-
     /**
      * 连接数据库
      * @return
      */
-    public static Connection getConn() {
-
+    public static Connection getConnection(String url, String username, String password) {
+        Connection conn;
         try {
-            conn = DriverManager.getConnection(
-                    Contants.URL.getContext()
-                    ,Contants.USERNAME.getContext()
-                    ,Contants.PASSWORD.getContext());
+            conn = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             LOGGER.info("连接数据库失败");
             e.printStackTrace();
@@ -42,7 +35,7 @@ public class JavaDataBaseConnector {
      * @return
      */
     public static PreparedStatement getPs(String sql, Connection conn) {
-
+        PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
         } catch (SQLException e) {
@@ -59,7 +52,7 @@ public class JavaDataBaseConnector {
      * @return
      */
     public static ResultSet getRs(PreparedStatement ps) {
-
+        ResultSet rs = null;
         try {
             rs = ps.executeQuery();
         } catch (SQLException e) {
@@ -70,13 +63,16 @@ public class JavaDataBaseConnector {
         return rs;
     }
 
+    /**
+     * Not recommend
+     */
+    @Deprecated()
+    public static void closeConn(Connection conn, PreparedStatement ps, ResultSet rs){
 
-    public static void closeConn(){
         boolean flag = true;
-
         try {
-            if (ps != null) {
-                ps.close();
+            if (rs != null) {
+                rs.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,8 +80,8 @@ public class JavaDataBaseConnector {
         }
 
         try {
-            if (rs != null) {
-                rs.close();
+            if (ps != null) {
+                ps.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();

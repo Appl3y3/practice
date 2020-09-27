@@ -72,7 +72,9 @@ public class DataCreation {
         File file = new File(filePath);
 
         try {
-            Writer writer = new FileWriter(file, false);//覆盖不追加
+
+            //覆盖不追加
+            Writer writer = new FileWriter(file, false);
 
             for (int i = 0; i < num; i++) {
                 StringBuilder sb = new StringBuilder();
@@ -124,7 +126,7 @@ public class DataCreation {
         boolean flag = true;
         String s= TxtOperation.readTxt(filePath);
         String[] split = s.split(";");
-        final Connection conn = JavaDataBaseConnector.getConn();
+        final Connection conn = JavaDataBaseConnector.getConnection(Constants.URL.getContext(), Constants.USERNAME.getContext(), Constants.PASSWORD.getContext());
 
         for (int i = 0; i < split.length; i++) {
             PreparedStatement ps = JavaDataBaseConnector.getPs(split[i], conn);
@@ -132,12 +134,13 @@ public class DataCreation {
             try {
                 ps.execute();
                 LOGGER.info("第" + (i + 1) + "条数据插入成功");
+                conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
                 flag = false;
             }
         }
-        JavaDataBaseConnector.closeConn();
+
         return flag;
 
     }
