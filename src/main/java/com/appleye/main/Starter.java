@@ -1,14 +1,10 @@
 package com.appleye.main;
 
-import com.appleye.modifier.DefaultDemo;
-import com.appleye.modifier.PrivateDemo;
-import com.appleye.modifier.ProtectedDemo;
-import com.appleye.modifier.PublicDemo;
+import com.appleye.entity.Person;
+import com.appleye.util.Constants;
 import com.appleye.util.DataCreation;
-import com.mysql.cj.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Appleye
@@ -58,8 +54,17 @@ public class Starter {
 
         List<Integer> list = new LinkedList<Integer>();
 
+        Constants.PASSWORD.getContext();
+        String str1 = new String("sda");
+        String str2 = str1.intern();
+        String str3 = "sda";
+        System.out.println(str1 == str2);
+        System.out.println(str2 == str3);
+        System.out.println(str1 == str3);
 
 
+        Person p = new Person("张三", 24, "男");
+        System.out.println(p.toString());
 
     }
 
