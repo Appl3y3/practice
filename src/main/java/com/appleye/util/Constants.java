@@ -1,6 +1,5 @@
 package com.appleye.util;
 
-import lombok.Data;
 import lombok.Getter;
 
 /**

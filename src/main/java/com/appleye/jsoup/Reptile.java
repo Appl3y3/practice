@@ -39,14 +39,16 @@ public class Reptile {
     public static void main(String[] args) throws IOException {
 
 
-        for (int i = 1; i <= 50; i++) {
-            savePage(i);
-            System.out.println("存储完第"+ i +"页");
-        }
-
 //        for (int i = 1; i <= 50; i++) {
-//            goToDB(readByLine(i));
+//            savePage(i);
+//            System.out.println("存储完第"+ i +"页");
 //        }
+
+        for (int i = 1; i <= 50; i++) {
+            goToDB(readByLine(i));
+            System.out.println("存储完第"+ i +"页");
+
+        }
 
     }
 
@@ -102,7 +104,8 @@ public class Reptile {
         Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry next = iterator.next();
-            String sql = String.format("insert into dsbt select '%s' movie_id,'%s' title from dual where not exists (select 1 from dsbt where movie_id = '%s');", next.getKey(), next.getValue(), next.getKey());
+            String sql = String.format("insert into movie (movie_id, title) select '%s' movie_id,'%s' title from dual where not exists (select 1 from movie where movie_id = '%s');", next.getKey(), next.getValue(), next.getKey());
+            System.out.println(sql);
             save(sql);
         }
     }
@@ -111,8 +114,8 @@ public class Reptile {
     public static void save(String sql){
 
         try( Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/dsbt?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT"
-                , "root", "root");
+                "jdbc:mysql://47.95.9.21/dsbt?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT"
+                , "Appleye", "Yosug4");
              PreparedStatement ps = conn.prepareStatement(sql);
              ) {
             boolean execute = ps.execute();
