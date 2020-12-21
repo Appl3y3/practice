@@ -1,10 +1,17 @@
 package com.appleye.main;
 
-import com.appleye.entity.Person;
-import com.appleye.util.Constants;
+import com.appleye.jsoup.TextHandler;
+import com.appleye.modifier.DefaultDemo;
+import com.appleye.modifier.PrivateDemo;
+import com.appleye.modifier.ProtectedDemo;
+import com.appleye.modifier.PublicDemo;
 import com.appleye.util.DataCreation;
+import com.mysql.cj.util.StringUtils;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Appleye
@@ -13,8 +20,8 @@ import java.util.*;
  * @time 10:01
  */
 public class Starter {
-    public static void main(String[] args) {
-        DataCreation.createData("D:\\Files\\sql_million.sql",1_000_000,false);
+    public static void main(String[] args) throws Exception{
+//        DataCreation.createData("D:\\Files\\sql_million.sql",1_000_000,false);
 //        DataCreation.insert("D:\\Files\\sql.sql");
 //        System.out.println(Tools.isEven(6));
 
@@ -52,19 +59,7 @@ public class Starter {
 //
 
 
-        List<Integer> list = new LinkedList<Integer>();
 
-        Constants.PASSWORD.getContext();
-        String str1 = new String("sda");
-        String str2 = str1.intern();
-        String str3 = "sda";
-        System.out.println(str1 == str2);
-        System.out.println(str2 == str3);
-        System.out.println(str1 == str3);
-
-
-        Person p = new Person("张三", 24, "男");
-        System.out.println(p.toString());
 
     }
 
