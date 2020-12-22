@@ -36,24 +36,31 @@ public class Reptile {
     static String mainUrl2 = "https://www.ac59.xyz";
 
 
+
     public static void main(String[] args) throws IOException {
 
 
-//        for (int i = 1; i <= 50; i++) {
-//            savePage(i);
-//            System.out.println("存储完第"+ i +"页");
-//        }
+        for (int i = 1; i <= 50; i++) {
+            savePage(i);
+            System.out.println("存储完第"+ i +"页");
+        }
 
         for (int i = 1; i <= 50; i++) {
             goToDB(readByLine(i));
-            System.out.println("存储完第"+ i +"页");
+            System.out.println("入库完第"+ i +"页");
 
         }
 
+        //1.磁力、图片、标题
+
+    }
+
+    public static String getFilePath(Integer pageNumber) {
+        return "E:\\Program Files\\Files\\Reptile\\Page " + pageNumber + ".txt";
     }
 
     /**
-     * 按页存储爬取list
+     * 按页存储爬取list写文件
      * @param pageNumber
      */
     public static void savePage(Integer pageNumber){
@@ -99,6 +106,10 @@ public class Reptile {
         return null;
     }
 
+    /**
+     * 根据map生成sql并调用执行SQL
+     * @param map
+     */
     public static void goToDB(Map map) {
 
         Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
@@ -110,12 +121,18 @@ public class Reptile {
         }
     }
 
-
+    /**
+     * 执行sql
+     * @param sql
+     */
     public static void save(String sql){
 
         try( Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://47.95.9.21/dsbt?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT"
-                , "Appleye", "Yosug4");
+                ,Constants.USERNAME.getContext()
+                ,Constants.PASSWORD.getContext()
+                );
+
              PreparedStatement ps = conn.prepareStatement(sql);
              ) {
             boolean execute = ps.execute();
@@ -125,8 +142,6 @@ public class Reptile {
 
     }
 
-    public static String getFilePath(Integer pageNumber) {
-        return "H:\\Reptile\\Page " + pageNumber + ".txt";
-    }
+
 
 }
