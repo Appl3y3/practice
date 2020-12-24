@@ -1,22 +1,10 @@
 package com.appleye.jsoup;
 
 import com.appleye.util.Constants;
-import com.google.protobuf.MapEntry;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,46 +24,85 @@ public class Reptile {
     static String mainUrl2 = "https://www.ac59.xyz";
 
 
-
     public static void main(String[] args) throws IOException {
 
 
-        for (int i = 1; i <= 50; i++) {
-            savePage(i);
-            System.out.println("存储完第"+ i +"页");
-        }
+//        for (int i = 1; i <= 50; i++) {
+//            savePage(getPageDocument(getUrl(i)),getFilePath(i));
+//            System.out.println("存储完第"+ i +"页");
+//        }
+//
+//        for (int i = 1; i <= 50; i++) {
+//            goToDB(readByLine(i));
+//            System.out.println("入库完第"+ i +"页");
+//
+//        }
 
-        for (int i = 1; i <= 50; i++) {
-            goToDB(readByLine(i));
-            System.out.println("入库完第"+ i +"页");
-
-        }
+        readByLine(1);
 
         //1.磁力、图片、标题
 
     }
 
     public static String getFilePath(Integer pageNumber) {
-        return "E:\\Program Files\\Files\\Reptile\\Page " + pageNumber + ".txt";
+        return String.format("E:\\Program Files\\Files\\Reptile\\Page %s.txt", pageNumber);
+    }
+
+
+    public static String getFilePath(Integer pageNumber, String movieID) {
+        String dir = String.format("E:\\Program Files\\Files\\Reptile\\Page %s", pageNumber);
+        return String.format("E:\\Program Files\\Files\\Reptile\\Page %s\\%s.txt", pageNumber, movieID);
+    }
+
+
+
+
+
+
+    public static String getUrl(Integer pageNumber) {
+        return mainUrl + "/index.php?page=" + pageNumber;
+    }
+
+    public static String getUrl(String movieID) {
+        return mainUrl + "/movie.php?id=" + movieID;
     }
 
     /**
-     * 按页存储爬取list写文件
-     * @param pageNumber
+     * 请求url返回Document
+     * @param url
+     * @return Document
      */
-    public static void savePage(Integer pageNumber){
-        String url = mainUrl + "/index.php?page=" + pageNumber;
+    public static Document getPageDocument(String url) {
 
         try {
-            Document doc = Jsoup.connect(url).get();
-            Elements ul = doc.getElementsByClass("list");
+            return Jsoup.connect(url).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-            BufferedWriter out = new BufferedWriter(new FileWriter(getFilePath(pageNumber)));
+
+    /**
+     * 按页存储爬取list写文件
+     * @param doc
+     */
+    public static void savePage(Document doc,String filePath){
+            Elements ul = doc.getElementsByClass("list");
+        try {
+            String path = filePath.substring(0, filePath.lastIndexOf("\\"));
+            System.out.println(path);
+            File file=new File(path);
+            if (!file.exists()) {file.mkdirs();}
+
+            //TODO
+            BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
             out.write(String.valueOf(ul));
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -91,9 +118,19 @@ public class Reptile {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(" <li>[")) {
+
                     String movieID = line.substring(line.indexOf("id=") + 3, line.indexOf("\" ta"));
+
                     String ciphertext = line.substring(line.indexOf("d('") + 3, line.indexOf("')"));
                     String title = TextHandler.parseTitle(ciphertext);
+
+                    String url = getUrl(movieID);
+                    Document pageDocument = getPageDocument(url);
+                    String filePath = getFilePath(pageNumber, movieID);
+
+                    savePage(pageDocument, filePath);
+
+
                     map.put(movieID, title);
 
                 }
