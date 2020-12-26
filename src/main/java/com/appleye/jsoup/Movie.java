@@ -15,7 +15,12 @@ public class Movie {
     private String title;
     private String publishDate;
     private String magnet;
-    private String[] pictures;
+    private String[] picturePaths;
 
-
+    public Movie(String movieID, String publishDate, String magnet, String[] picturePaths) {
+        this.movieID = movieID;
+        this.publishDate = publishDate;
+        this.magnet = magnet;
+        this.picturePaths = picturePaths;
+    }
 }
