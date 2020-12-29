@@ -2,15 +2,16 @@ package com.appleye.jsoup;
 
 import com.appleye.util.Constants;
 
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.*;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,34 +24,40 @@ import java.util.regex.Pattern;
  */
 public class Reptile {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(Reptile.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Reptile.class);
 
-    static String mainUrl = "https://www.ac63.xyz";
-    static String mainUrl2 = "https://www.ac59.xyz";
-
+    final static String MAIN_URL = "https://www.ac63.xyz";
+    final static String MAIN_URL2 = "https://www.ac59.xyz";
+    final static String FILE_HOME =  System.getenv("FILE_HOME");
 
 
     public static void main(String[] args) throws IOException {
 
+        //1.存储页面为文件
+        try {
+            for (int i = 1; i <= 50; i++) {
+                savePage(getPageDocument(getUrl(i)),getFilePath(i));
+                LOGGER.info("存储完第{}页", i);
 
-//        try {
-//            for (int i = 1; i <= 50; i++) {
-//                savePage(getPageDocument(getUrl(i)),getFilePath(i));
-//                System.out.println("存储完第"+ i +"页");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-
-//        for (int i = 1; i <= 50; i++) {
-//            goToDB(readByLine(i));
-//            System.out.println("入库完第"+ i +"页");
-//        }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
+        //2.读取文件入库
+        for (int i = 1; i <= 50; i++) {
+            goToDB(readByLine(i));
+            System.out.println("入库完第"+ i +"页");
+        }
 
-        String sql = "select movie_id from movie where publish_date is null or magnet is null or picture_paths is null order by insert_time limit 1";
+
+        //3.完善库中信息(发布日期，磁力，图片)
+        String sql = "select movie_id from movie " +
+                "where publish_date is null " +
+                "or magnet is null " +
+                "or picture_paths is null " +
+                "order by insert_time limit 1";
         String movieID = null;
         int count = 0;
         for (;;) {
@@ -68,28 +75,23 @@ public class Reptile {
 
 
 
-
-
-
-
-        //1.磁力、图片、标题
     }
 
     public static String getFilePath(Integer pageNumber) {
-        return String.format("E:\\Program Files\\Files\\Reptile\\Page %s.txt", pageNumber);
+        return String.format("%s\\Reptile\\Page %s.txt", FILE_HOME, pageNumber);
     }
 
     public static String getFilePath(Integer pageNumber, String movieID) {
-        String dir = String.format("E:\\Program Files\\Files\\Reptile\\Page %s", pageNumber);
-        return String.format("E:\\Program Files\\Files\\Reptile\\Page %s\\%s.txt", pageNumber, movieID);
+        String dir = String.format("%s\\Reptile\\Page %s", FILE_HOME, pageNumber);
+        return String.format("%s\\Reptile\\Page %s\\%s.txt", FILE_HOME, pageNumber, movieID);
     }
 
     public static String getUrl(Integer pageNumber) {
-        return mainUrl + "/index.php?page=" + pageNumber;
+        return MAIN_URL + "/index.php?page=" + pageNumber;
     }
 
     public static String getUrl(String movieID) {
-        return mainUrl + "/movie.php?id=" + movieID;
+        return MAIN_URL + "/movie.php?id=" + movieID;
     }
 
     public static String getUpdateSql(Movie movie){
@@ -123,11 +125,9 @@ public class Reptile {
     public static void savePage(Document doc,String filePath){
             Elements ul = doc.getElementsByClass("list");
         try {
-//            String path = filePath.substring(0, filePath.lastIndexOf("\\"));
-//            System.out.println(path);
-//            File file=new File(path);
-//            if (!file.exists()) {file.mkdirs();}
-//            //TODO
+            String path = filePath.substring(0, filePath.lastIndexOf("\\"));
+            File file=new File(path);
+            if (!file.exists()) {file.mkdirs();}
 
             BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
             out.write(String.valueOf(ul));

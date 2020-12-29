@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * @createTime 2020-08-17 11:27
  */
 public interface Subject {
+
     ArrayList<Observer> observers = new ArrayList<>();
 
     default void register(Observer observer) {

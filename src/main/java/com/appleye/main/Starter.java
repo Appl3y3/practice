@@ -1,24 +1,5 @@
 package com.appleye.main;
 
-import com.appleye.jsoup.Reptile;
-import com.appleye.jsoup.TextHandler;
-import com.appleye.modifier.DefaultDemo;
-import com.appleye.modifier.PrivateDemo;
-import com.appleye.modifier.ProtectedDemo;
-import com.appleye.modifier.PublicDemo;
-import com.appleye.util.DataCreation;
-import com.mysql.cj.util.StringUtils;
-import com.sun.xml.internal.bind.v2.TODO;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Appleye
@@ -68,7 +49,6 @@ public class Starter {
 
 
 
-    }
 
-
+       }
 }

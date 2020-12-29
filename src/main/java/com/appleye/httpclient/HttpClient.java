@@ -23,13 +23,14 @@ public class HttpClient {
         //2.声明get请求
         HttpGet httpGet = new HttpGet("http://47.95.9.21:8080/brand/listAll");
         httpGet.setHeader("Accept","application/json");
-        httpGet.setHeader("Authorization","Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImNyZWF0ZWQiOjE1OTg1MTAyNjA1ODYsImV4cCI6MTU5OTExNTA2MH0.EcB53mneNNYaft43fUMKVTSpy1tImEbdJqFoXnC5OXr7VekEjC6VaAVr60VqqgGlLq_KpUihNl7JJAMdvJ6_aQ");
+        httpGet.setHeader("Authorization","Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImNyZWF0ZWQiOjE2MDEyNjE0NzQwMjMsImV4cCI6MTYwMTg2NjI3NH0.LcRV3GEDGZ0wtYebOXpva6-a_D9ecmfLmSQ44_TpqtsoI9B9jUCFy80Y7PlbfF0hqtVxEIGViFlkYxDQ3WF4oQ");
 
         //3.发送请求
         CloseableHttpResponse response = httpClient.execute(httpGet);
 
         //4.判断状态码
-        if (response.getStatusLine().getStatusCode() == 200) {
+        int successCode = 200;
+        if (response.getStatusLine().getStatusCode() == successCode) {
             HttpEntity entity = response.getEntity();
             String string = EntityUtils.toString(entity, "utf-8");
             System.out.println(string);
